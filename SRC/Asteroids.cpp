@@ -20,6 +20,7 @@ Asteroids::Asteroids(int argc, char *argv[])
 {
 	mLevel = 0;
 	mAsteroidCount = 0;
+	mStartScreenActive = true;
 }
 
 /** Destructor. */
@@ -57,6 +58,9 @@ void Asteroids::Start()
 	Animation *explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
+
+	// Create the start screen
+	CreateStartScreen();
 
 	// Create a spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
@@ -170,6 +174,10 @@ void Asteroids::OnTimer(int value)
 		mGameOverLabel->SetVisible(true);
 	}
 
+}
+
+void Asteroids::ResetSpaceship()
+{
 }
 
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
@@ -290,6 +298,25 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 	explosion->SetSprite(explosion_sprite);
 	explosion->Reset();
 	return explosion;
+}
+
+void Asteroids::CreateStartScreen()
+{
+	// Create and display title label
+	mTitleLabel = make_shared<GUILabel>("Asteroids");
+	mTitleLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mTitleLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	shared_ptr<GUIComponent> title_component = static_pointer_cast<GUIComponent>(mTitleLabel);
+	// Add to display and set distance from centre/middle
+	mGameDisplay->GetContainer()->AddComponent(title_component, GLVector2f(0.5f, 0.7f));
+
+	// Create and display a start label
+	mStartLabel = make_shared<GUILabel>("Press [Enter] to Start");
+	mStartLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mStartLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	shared_ptr<GUIComponent> start_component = static_pointer_cast<GUIComponent>(mStartLabel);
+	// Add to display and set distance from centre/middle
+	mGameDisplay->GetContainer()->AddComponent(start_component, GLVector2f(0.5f, 0.3f));
 }
 
 

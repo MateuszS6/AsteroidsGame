@@ -69,6 +69,7 @@ private:
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;
 
+	// Start screen fields
 	bool mStartScreenActive;
 	shared_ptr<GUILabel> mTitleLabel;
 	shared_ptr<GUILabel> mStartLabel;
