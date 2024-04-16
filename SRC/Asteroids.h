@@ -68,6 +68,13 @@ private:
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;
+
+	bool mStartScreenActive;
+	shared_ptr<GUILabel> mTitleLabel;
+	shared_ptr<GUILabel> mStartLabel;
+
+	// Declaration of the start screen
+	void CreateStartScreen();
 };
 
 #endif
