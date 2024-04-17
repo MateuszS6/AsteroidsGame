@@ -52,13 +52,17 @@ private:
 	shared_ptr<GUILabel> mScoreLabel;
 	shared_ptr<GUILabel> mLivesLabel;
 	shared_ptr<GUILabel> mGameOverLabel;
+	shared_ptr<GUILabel> mTitleLabel;
+	shared_ptr<GUILabel> mStartLabel;
 
 	uint mLevel;
 	uint mAsteroidCount;
+	bool mGameStarted;
 
 	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
 	void CreateGUI();
+	void CreateStartScreen();
 	void CreateAsteroids(const uint num_asteroids);
 	shared_ptr<GameObject> CreateExplosion();
 	
@@ -68,14 +72,6 @@ private:
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;
-
-	// Start screen fields
-	bool mStartScreenActive;
-	shared_ptr<GUILabel> mTitleLabel;
-	shared_ptr<GUILabel> mStartLabel;
-
-	// Declaration of the start screen
-	void CreateStartScreen();
 };
 
 #endif
