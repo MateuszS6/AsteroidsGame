@@ -84,13 +84,37 @@ void Asteroids::Stop()
 
 void Asteroids::OnKeyPressed(uchar key, int x, int y)
 {
-	switch (key)
+	if (!mGameStarted)
 	{
-	case ' ':
-		mSpaceship->Shoot();
-		break;
-	default:
-		break;
+		switch (key)
+		{
+		case ' ':
+			// Hide the start screen labels
+			mTitleLabel->SetVisible(false);
+			mStartLabel->SetVisible(false);
+			mSelectLabel->SetVisible(false);
+			// Show the in-game labels
+			mScoreLabel->SetVisible(true);
+			mLivesLabel->SetVisible(true);
+			// Set the game to 'started' so that controls react correctly
+			mGameStarted = true;
+			// Create some asteroids and add them to the world
+			CreateAsteroids(10);
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		switch (key)
+		{
+		case ' ':
+			mSpaceship->Shoot();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -218,10 +242,16 @@ void Asteroids::CreateGUI()
 {
 	// Add a (transparent) border around the edge of the game display
 	mGameDisplay->GetContainer()->SetBorder(GLVector2i(10, 10));
+
+	// Create the start screen elements
+	CreateStartScreen();
+
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mScoreLabel = make_shared<GUILabel>("Score: 0");
 	// Set the vertical alignment of the label to GUI_VALIGN_TOP
 	mScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Set visiblity to false (hidden)
+	mScoreLabel->SetVisible(false);
 	// Add the GUILabel to the GUIComponent  
 	shared_ptr<GUIComponent> score_component
 		= static_pointer_cast<GUIComponent>(mScoreLabel);
@@ -231,6 +261,8 @@ void Asteroids::CreateGUI()
 	mLivesLabel = make_shared<GUILabel>("Lives: 3");
 	// Set the vertical alignment of the label to GUI_VALIGN_BOTTOM
 	mLivesLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_BOTTOM);
+	// Set the visiblity to false (hidden)
+	mLivesLabel->SetVisible(false);
 	// Add the GUILabel to the GUIComponent  
 	shared_ptr<GUIComponent> lives_component = static_pointer_cast<GUIComponent>(mLivesLabel);
 	mGameDisplay->GetContainer()->AddComponent(lives_component, GLVector2f(0.0f, 0.0f));
