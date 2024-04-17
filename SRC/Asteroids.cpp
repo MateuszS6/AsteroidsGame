@@ -56,6 +56,10 @@ void Asteroids::Start()
 	Animation* explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
 	Animation* asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation* spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
+	Animation* spaceship2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship2", 128, 128, 128, 128, "spaceship2_fs.png");
+	Animation* spaceship3_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship3", 128, 128, 128, 128, "spaceship3_fs.png");
+	Animation* spaceship4_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship4", 128, 128, 128, 128, "spaceship4_fs.png");
+	Animation* spaceship5_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship5", 128, 128, 128, 128, "spaceship5_fs.png");
 
 	// Create a default spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
@@ -208,10 +212,8 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	mSpaceship->SetBoundingShape(make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
 	shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
 	mSpaceship->SetBulletShape(bullet_shape);
-	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("spaceship");
-	shared_ptr<Sprite> spaceship_sprite =
-		make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
-	mSpaceship->SetSprite(spaceship_sprite);
+	// Start off with the default spaceship sprite
+	SetSpaceshipSprite("spaceship");
 	mSpaceship->SetScale(0.1f);
 	// Reset spaceship back to centre of the world
 	mSpaceship->Reset();
@@ -219,6 +221,11 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	return mSpaceship;
 }
 
+void Asteroids::SetSpaceshipSprite(const string& name)
+{
+	Animation* anim_ptr = AnimationManager::GetInstance().GetAnimationByName(name);
+	shared_ptr<Sprite> spaceship_sprite = make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+	mSpaceship->SetSprite(spaceship_sprite);
 }
 
 void Asteroids::CreateAsteroids(const uint num_asteroids)
