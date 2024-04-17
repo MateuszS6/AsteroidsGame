@@ -105,6 +105,21 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 			// Create some asteroids and add them to the world
 			CreateAsteroids(10);
 			break;
+		case '1':
+			SetSpaceshipSprite("spaceship");
+			break;
+		case '2':
+			SetSpaceshipSprite("spaceship2");
+			break;
+		case '3':
+			SetSpaceshipSprite("spaceship3");
+			break;
+		case '4':
+			SetSpaceshipSprite("spaceship4");
+			break;
+		case '5':
+			SetSpaceshipSprite("spaceship5");
+			break;
 		default:
 			break;
 		}
