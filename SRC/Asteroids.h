@@ -54,6 +54,7 @@ private:
 	shared_ptr<GUILabel> mGameOverLabel;
 	shared_ptr<GUILabel> mTitleLabel;
 	shared_ptr<GUILabel> mStartLabel;
+	shared_ptr<GUILabel> mSelectLabel;
 
 	uint mLevel;
 	uint mAsteroidCount;
@@ -61,6 +62,7 @@ private:
 
 	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
+	void SetSpaceshipSprite(const string& name);
 	void CreateGUI();
 	void CreateStartScreen();
 	void CreateAsteroids(const uint num_asteroids);
