@@ -15,12 +15,10 @@
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Constructor. Takes arguments from command line, just in case. */
-Asteroids::Asteroids(int argc, char *argv[])
-	: GameSession(argc, argv)
+Asteroids::Asteroids(int argc, char *argv[]) : GameSession(argc, argv), mGameStarted(false)
 {
 	mLevel = 0;
 	mAsteroidCount = 0;
-	mStartScreenActive = true;
 }
 
 /** Destructor. */
@@ -55,19 +53,14 @@ void Asteroids::Start()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
 	glEnable(GL_LIGHT0);
 
-	Animation *explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
-	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
-	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
+	Animation* explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
+	Animation* asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
+	Animation* spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 
-	// Create the start screen
-	CreateStartScreen();
-
-	// Create a spaceship and add it to the world
+	// Create a default spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
-	// Create some asteroids and add them to the world
-	CreateAsteroids(10);
 
-	//Create the GUI
+	// Create the GUI
 	CreateGUI();
 
 	// Add a player (watcher) to the game world
@@ -101,14 +94,16 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 	}
 }
 
-void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
+void Asteroids::OnKeyReleased(uchar key, int x, int y)
+{
+}
 
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
 	switch (key)
 	{
-	// If up arrow key is pressed start applying forward thrust
-	case GLUT_KEY_UP: mSpaceship->Thrust(6); break;
+	// If up arrow key is pressed AND the game has started, start applying forward thrust
+	case GLUT_KEY_UP: if (mGameStarted) mSpaceship->Thrust(6); break;
 	// If left arrow key is pressed start rotating anti-clockwise
 	case GLUT_KEY_LEFT: mSpaceship->Rotate(150); break;
 	// If right arrow key is pressed start rotating clockwise
@@ -130,7 +125,7 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 	case GLUT_KEY_RIGHT: mSpaceship->Rotate(0); break;
 	// Default case - do nothing
 	default: break;
-	} 
+	}
 }
 
 
@@ -198,6 +193,7 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	mSpaceship->Reset();
 	// Return the spaceship so it can be added to the world
 	return mSpaceship;
+}
 
 }
 
@@ -245,13 +241,44 @@ void Asteroids::CreateGUI()
 	mGameOverLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
 	mGameOverLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
-	// Set the visibility of the label to false (hidden)
+	// Set the visibility to false (hidden)
 	mGameOverLabel->SetVisible(false);
 	// Add the GUILabel to the GUIContainer  
-	shared_ptr<GUIComponent> game_over_component
-		= static_pointer_cast<GUIComponent>(mGameOverLabel);
+	shared_ptr<GUIComponent> game_over_component = static_pointer_cast<GUIComponent>(mGameOverLabel);
 	mGameDisplay->GetContainer()->AddComponent(game_over_component, GLVector2f(0.5f, 0.5f));
+}
 
+void Asteroids::CreateStartScreen()
+{
+	// Create and wrap the title label in a shared_ptr
+	mTitleLabel = shared_ptr<GUILabel>(new GUILabel("Asteroids"));
+	// Align to the middle of the screen
+	mTitleLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	// Align to the centre of the screen
+	mTitleLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Add to the display and set distance from centre/middle
+	shared_ptr<GUIComponent> title_component = static_pointer_cast<GUIComponent>(mTitleLabel);
+	mGameDisplay->GetContainer()->AddComponent(title_component, GLVector2f(0.5f, 0.7f));
+
+	// Create and wrap the start label in a shared_ptr
+	mStartLabel = shared_ptr<GUILabel>(new GUILabel("Press [SPACE] to Start"));
+	// Align to the middle of the screen
+	mStartLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	// Align to the centre of the screen
+	mStartLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Add to the display and set distance from centre/middle
+	shared_ptr<GUIComponent> start_component = static_pointer_cast<GUIComponent>(mStartLabel);
+	mGameDisplay->GetContainer()->AddComponent(start_component, GLVector2f(0.5f, 0.3f));
+
+	// Create and wrap the start label in a shared_ptr
+	mSelectLabel = shared_ptr<GUILabel>(new GUILabel("Press [1-5] to Select Spaceship"));
+	// Align to the bottom of the screen
+	mSelectLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	// Align to the centre of the screen
+	mSelectLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Add to the display and set distance from centre/middle
+	shared_ptr<GUIComponent> toggle_component = static_pointer_cast<GUIComponent>(mSelectLabel);
+	mGameDisplay->GetContainer()->AddComponent(toggle_component, GLVector2f(0.5f, 0.2f));
 }
 
 void Asteroids::OnScoreChanged(int score)
@@ -291,34 +318,10 @@ void Asteroids::OnPlayerKilled(int lives_left)
 shared_ptr<GameObject> Asteroids::CreateExplosion()
 {
 	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("explosion");
-	shared_ptr<Sprite> explosion_sprite =
-		make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+	shared_ptr<Sprite> explosion_sprite = make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
 	explosion_sprite->SetLoopAnimation(false);
 	shared_ptr<GameObject> explosion = make_shared<Explosion>();
 	explosion->SetSprite(explosion_sprite);
 	explosion->Reset();
 	return explosion;
 }
-
-void Asteroids::CreateStartScreen()
-{
-	// Create and display title label
-	mTitleLabel = make_shared<GUILabel>("Asteroids");
-	mTitleLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
-	mTitleLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
-	shared_ptr<GUIComponent> title_component = static_pointer_cast<GUIComponent>(mTitleLabel);
-	// Add to display and set distance from centre/middle
-	mGameDisplay->GetContainer()->AddComponent(title_component, GLVector2f(0.5f, 0.7f));
-
-	// Create and display a start label
-	mStartLabel = make_shared<GUILabel>("Press [Enter] to Start");
-	mStartLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
-	mStartLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
-	shared_ptr<GUIComponent> start_component = static_pointer_cast<GUIComponent>(mStartLabel);
-	// Add to display and set distance from centre/middle
-	mGameDisplay->GetContainer()->AddComponent(start_component, GLVector2f(0.5f, 0.3f));
-}
-
-
-
-
