@@ -60,7 +60,6 @@ private:
 	uint mAsteroidCount;
 	bool mGameStarted;
 
-	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
 	void SetSpaceshipSprite(const string& name);
 	void CreateGUI();

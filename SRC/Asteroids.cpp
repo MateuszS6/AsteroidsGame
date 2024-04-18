@@ -214,10 +214,6 @@ void Asteroids::OnTimer(int value)
 
 }
 
-void Asteroids::ResetSpaceship()
-{
-}
-
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
 {
@@ -324,15 +320,15 @@ void Asteroids::CreateStartScreen()
 	shared_ptr<GUIComponent> start_component = static_pointer_cast<GUIComponent>(mStartLabel);
 	mGameDisplay->GetContainer()->AddComponent(start_component, GLVector2f(0.5f, 0.3f));
 
-	// Create and wrap the start label in a shared_ptr
+	// Create and wrap the select label in a shared_ptr
 	mSelectLabel = shared_ptr<GUILabel>(new GUILabel("Press [1-5] to Select Spaceship"));
 	// Align to the bottom of the screen
 	mSelectLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
 	// Align to the centre of the screen
 	mSelectLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	// Add to the display and set distance from centre/middle
-	shared_ptr<GUIComponent> toggle_component = static_pointer_cast<GUIComponent>(mSelectLabel);
-	mGameDisplay->GetContainer()->AddComponent(toggle_component, GLVector2f(0.5f, 0.2f));
+	shared_ptr<GUIComponent> select_component = static_pointer_cast<GUIComponent>(mSelectLabel);
+	mGameDisplay->GetContainer()->AddComponent(select_component, GLVector2f(0.5f, 0.2f));
 }
 
 void Asteroids::OnScoreChanged(int score)
