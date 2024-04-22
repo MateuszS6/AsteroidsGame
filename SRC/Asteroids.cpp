@@ -58,19 +58,28 @@ void Asteroids::Start()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
 	glEnable(GL_LIGHT0);
 
+	// Animations for game objects
 	Animation* explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
 	Animation* asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
-	Animation* spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
+	Animation* spaceship1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship1", 128, 128, 128, 128, "spaceship1_fs.png");
 	Animation* spaceship2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship2", 128, 128, 128, 128, "spaceship2_fs.png");
 	Animation* spaceship3_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship3", 128, 128, 128, 128, "spaceship3_fs.png");
 	Animation* spaceship4_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship4", 128, 128, 128, 128, "spaceship4_fs.png");
 	Animation* spaceship5_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship5", 128, 128, 128, 128, "spaceship5_fs.png");
-
-	// Create a default spaceship and add it to the world
-	mGameWorld->AddObject(CreateSpaceship());
+	Animation* powerup1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("life", 128, 128, 128, 128, "life_bonus_fs.png");
+	Animation* powerup2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("time", 128, 128, 128, 128, "time_bonus_fs.png");
+	Animation* powerup3_anim = AnimationManager::GetInstance().CreateAnimationFromFile("phasing", 128, 128, 128, 128, "phasing_bonus_fs.png");
+	Animation* phasing_spaceship1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("phasing_spaceship1", 128, 128, 128, 128, "phasing_spaceship1_fs.png");
+	Animation* phasing_spaceship2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("phasing_spaceship2", 128, 128, 128, 128, "phasing_spaceship2_fs.png");
+	Animation* phasing_spaceship3_anim = AnimationManager::GetInstance().CreateAnimationFromFile("phasing_spaceship3", 128, 128, 128, 128, "phasing_spaceship3_fs.png");
+	Animation* phasing_spaceship4_anim = AnimationManager::GetInstance().CreateAnimationFromFile("phasing_spaceship4", 128, 128, 128, 128, "phasing_spaceship4_fs.png");
+	Animation* phasing_spaceship5_anim = AnimationManager::GetInstance().CreateAnimationFromFile("phasing_spaceship5", 128, 128, 128, 128, "phasing_spaceship5_fs.png");
 
 	// Create the GUI
 	CreateGUI();
+
+	// Create a default spaceship and add it to the world
+	mGameWorld->AddObject(CreateSpaceship());
 
 	// Add a player (watcher) to the game world
 	mGameWorld->AddListener(&mPlayer);
