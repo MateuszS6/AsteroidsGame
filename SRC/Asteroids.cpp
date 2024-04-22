@@ -15,10 +15,15 @@
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Constructor. Takes arguments from command line, just in case. */
-Asteroids::Asteroids(int argc, char *argv[]) : GameSession(argc, argv), mGameStarted(false)
+Asteroids::Asteroids(int argc, char *argv[])
+	: GameSession(argc, argv)
 {
 	mLevel = 0;
 	mAsteroidCount = 0;
+	mGameStarted = false;
+	mSpaceshipSpriteName = "spaceship1";
+	mIsBulletCooldownActive = false;
+	mIsTimeSlowed = false;
 }
 
 /** Destructor. */
@@ -28,7 +33,7 @@ Asteroids::~Asteroids(void)
 
 // PUBLIC INSTANCE METHODS ////////////////////////////////////////////////////
 
-/** Start an asteroids game. */
+/** Start an Asteroids game. */
 void Asteroids::Start()
 {
 	// Create a shared pointer for the Asteroids game object - DO NOT REMOVE
