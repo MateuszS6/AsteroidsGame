@@ -116,6 +116,8 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 			mGameStarted = true;
 			// Create some asteroids and add them to the world
 			CreateAsteroids(10);
+			// Create a power-up after 5 seconds
+			SetTimer(5000, SPAWN_NEXT_POWERUP);
 		}
 		else if (key >= '1' && key <= '5') {
 			mSpaceshipSpriteName = "spaceship" + to_string(key - '0');
@@ -198,24 +200,45 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 
 void Asteroids::OnTimer(int value)
 {
-	if (value == CREATE_NEW_PLAYER)
-	{
+	switch (value) {
+	case CREATE_NEW_PLAYER:
 		mSpaceship->Reset();
 		mGameWorld->AddObject(mSpaceship);
-	}
+		break;
 
-	if (value == START_NEXT_LEVEL)
+	case START_NEXT_LEVEL:
 	{
+		// Enclose in braces to create a local scope
 		mLevel++;
 		int num_asteroids = 10 + 2 * mLevel;
 		CreateAsteroids(num_asteroids);
+		if (mIsTimeSlowed) ToggleSlowMotion(true);
+		break;
 	}
 
-	if (value == SHOW_GAME_OVER)
-	{
+	case SHOW_GAME_OVER:
 		mGameOverLabel->SetVisible(true);
-	}
+		break;
 
+	case SPAWN_NEXT_POWERUP:
+		CreatePowerUp();
+		break;
+
+	case END_SLOW_MOTION:
+		ToggleSlowMotion(false);
+		break;
+
+	case END_PHASING:
+		TogglePhasing(false);
+		break;
+
+	case END_BULLET_COOLDOWN:
+		ToggleBulletCooldown(false);
+
+	default:
+		// Handle unexpected timer value
+		break;
+	}
 }
 
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
