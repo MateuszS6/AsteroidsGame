@@ -42,3 +42,16 @@ void Asteroid::OnCollision(const GameObjectList& objects)
 {
 	mWorld->FlagForRemoval(GetThisPtr());
 }
+
+void Asteroid::SetSpeed(float scaleFactor)
+{
+	mRotation = 100;
+	mVelocity *= scaleFactor;
+}
+
+void Asteroid::ResetSpeed()
+{
+	mRotation = 0;
+	mVelocity.x = 10.0 * cos(DEG2RAD * mAngle);
+	mVelocity.y = 10.0 * sin(DEG2RAD * mAngle);
+}
