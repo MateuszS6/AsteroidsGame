@@ -6,20 +6,21 @@
 
 /** Constructor. Bullets live for 2s by default. */
 Bullet::Bullet()
-	: GameObject("Bullet"), mTimeToLive(2000)
+	: GameObject("Bullet"), mTimeToLive(2000), mIsPowerUpBullet(false)
 {
 }
 
 /** Construct a new bullet with given position, velocity, acceleration, angle, rotation and lifespan. */
-Bullet::Bullet(GLVector3f p, GLVector3f v, GLVector3f a, GLfloat h, GLfloat r, int ttl)
-	: GameObject("Bullet", p, v, a, h, r), mTimeToLive(ttl)
+Bullet::Bullet(GLVector3f p, GLVector3f v, GLVector3f a, GLfloat h, GLfloat r, int ttl, bool ipub)
+	: GameObject("Bullet", p, v, a, h, r), mTimeToLive(ttl), mIsPowerUpBullet(ipub)
 {
 }
 
 /** Copy constructor. */
 Bullet::Bullet(const Bullet& b)
 	: GameObject(b),
-	  mTimeToLive(b.mTimeToLive)
+	  mTimeToLive(b.mTimeToLive),
+	mIsPowerUpBullet(b.mIsPowerUpBullet)
 {
 }
 
@@ -48,6 +49,14 @@ void Bullet::Update(int t)
 
 bool Bullet::CollisionTest(shared_ptr<GameObject> o)
 {
+	// Check if the bullet is a power-up bullet
+	if (mIsPowerUpBullet) {
+		// Power-up bullets only collide with power-ups
+		if (o->GetType() == GameObjectType("PowerUp"))
+			return mBoundingShape->CollisionTest(o->GetBoundingShape());
+		else return false;
+	}
+	// Normal bullets only collide with asteroids
 	if (o->GetType() != GameObjectType("Asteroid")) return false;
 	if (mBoundingShape.get() == NULL) return false;
 	if (o->GetBoundingShape().get() == NULL) return false;

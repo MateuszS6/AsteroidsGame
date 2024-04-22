@@ -8,7 +8,7 @@ class Bullet : public GameObject
 {
 public:
 	Bullet();
-	Bullet(GLVector3f p, GLVector3f v, GLVector3f a, GLfloat h, GLfloat r, int ttl);
+	Bullet(GLVector3f p, GLVector3f v, GLVector3f a, GLfloat h, GLfloat r, int ttl, bool ipub);
 	Bullet(const Bullet& b);
 	virtual ~Bullet(void);
 
@@ -20,8 +20,11 @@ public:
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList& objects);
 
+	bool IsPowerUpBullet() const { return mIsPowerUpBullet; }
+
 protected:
 	int mTimeToLive;
+	bool mIsPowerUpBullet;
 };
 
 #endif
