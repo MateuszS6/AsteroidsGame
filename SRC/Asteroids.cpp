@@ -443,33 +443,42 @@ void Asteroids::UpdatePowerUpLabel(const string& text, const GLVector3f& colour)
 void Asteroids::OnScoreChanged(int score)
 {
 	// Format the score message using an string-based stream
-	std::ostringstream msg_stream;
+	ostringstream msg_stream;
 	msg_stream << "Score: " << score;
 	// Get the score message as a string
-	std::string score_msg = msg_stream.str();
+	string score_msg = msg_stream.str();
 	mScoreLabel->SetText(score_msg);
 }
 
+void Asteroids::OnPlayerKilled()
 {
 	shared_ptr<GameObject> explosion = CreateExplosion();
 	explosion->SetPosition(mSpaceship->GetPosition());
 	explosion->SetRotation(mSpaceship->GetRotation());
 	mGameWorld->AddObject(explosion);
 
-	// Format the lives left message using an string-based stream
-	std::ostringstream msg_stream;
-	msg_stream << "Lives: " << lives_left;
-	// Get the lives left message as a string
-	std::string lives_msg = msg_stream.str();
-	mLivesLabel->SetText(lives_msg);
+	UpdateLivesLabel();
 
-	if (lives_left > 0) 
-	{ 
-		SetTimer(1000, CREATE_NEW_PLAYER); 
-	}
-	else
+	if (mPlayer.GetLivesLeft() > 0) SetTimer(1000, CREATE_NEW_PLAYER);
+	else SetTimer(500, SHOW_GAME_OVER);
+}
+
+void Asteroids::OnPowerUpCollected(const string& powerUpType)
+{
+	if (powerUpType == "life")
 	{
-		SetTimer(500, SHOW_GAME_OVER);
+		mPlayer.AddLife();
+		UpdateLivesLabel();
+	}
+	else if (powerUpType == "time")
+	{
+		ToggleSlowMotion(true);
+		SetTimer(10000, END_SLOW_MOTION);
+	}
+	else if (powerUpType == "phasing")
+	{
+		TogglePhasing(true);
+		SetTimer(10000, END_PHASING);
 	}
 }
 
