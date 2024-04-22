@@ -272,7 +272,29 @@ void Asteroids::CreatePowerUp()
 	// Add the power-up to the game world
 	mGameWorld->AddObject(powerup);
 }
+
+void Asteroids::ToggleSlowMotion(bool activate)
+{
+	mIsTimeSlowed = activate;
+	for (auto& asteroid : mAsteroidList)
+	{
+		if (activate) asteroid->SetSpeed(0.3f);
+		else asteroid->ResetSpeed();
 	}
+	UpdatePowerUpLabel(activate ? "TIME SLOWED" : "", GLVector3f(0.0f, 0.6f, 0.9f));
+}
+
+void Asteroids::TogglePhasing(bool activate)
+{
+	mSpaceship->SetBoundingShape(activate ? nullptr : make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
+	SetSpaceshipSprite(activate ? "phasing_" + mSpaceshipSpriteName : mSpaceshipSpriteName);
+	UpdatePowerUpLabel(activate ? "PHASING" : "", GLVector3f(0.7f, 0.5f, 0.3f));
+}
+
+void Asteroids::ToggleBulletCooldown(bool activate)
+{
+	mIsBulletCooldownActive = activate;
+	if (activate) SetTimer(1500, END_BULLET_COOLDOWN);
 }
 
 void Asteroids::CreateGUI()
