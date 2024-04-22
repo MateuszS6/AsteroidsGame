@@ -169,17 +169,28 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 
 void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 {
+	// Handle asteroid removal
 	if (object->GetType() == GameObjectType("Asteroid"))
 	{
+		// Create and position the explosion
 		shared_ptr<GameObject> explosion = CreateExplosion();
 		explosion->SetPosition(object->GetPosition());
 		explosion->SetRotation(object->GetRotation());
 		mGameWorld->AddObject(explosion);
-		mAsteroidCount--;
-		if (mAsteroidCount <= 0) 
-		{ 
-			SetTimer(500, START_NEXT_LEVEL); 
-		}
+
+		// Efficiently remove the asteroid from the list
+		mAsteroidList.erase(std::remove(mAsteroidList.begin(), mAsteroidList.end(), object), mAsteroidList.end());
+
+		// Decrease asteroid count and possibly start next level
+		if (--mAsteroidCount <= 0) SetTimer(500, START_NEXT_LEVEL); 
+		return; // Done handling asteroid removal
+	}
+
+	// Handle power-up removal
+	if (object->GetType() == GameObjectType("PowerUp"))
+	{
+		SetTimer(10000, SPAWN_NEXT_POWERUP);
+		return; // Done handling power-up removal
 	}
 }
 
