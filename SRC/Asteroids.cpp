@@ -246,6 +246,32 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 		asteroid->SetSprite(asteroid_sprite);
 		asteroid->SetScale(0.2f);
 		mGameWorld->AddObject(asteroid);
+void Asteroids::CreatePowerUp()
+{
+	// Define an array of power-up names
+	const vector<string> powerUpNames = { "life", "time", "phasing" };
+
+	// Generate a random index based on the number of available power-ups
+	int num = rand() % powerUpNames.size();
+
+	// Access the power-up name using the random index
+	const string& name = powerUpNames[num];
+
+	// Create the power-up object
+	auto powerup = make_shared<PowerUp>(name);
+	powerup->SetBoundingShape(std::make_shared<BoundingSphere>(powerup->GetThisPtr(), 5.0f));
+
+	// Retrieve animation based on power-up name
+	auto anim_ptr = AnimationManager::GetInstance().GetAnimationByName(name);
+	auto powerup_sprite = make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+
+	// Set the sprite and scale
+	powerup->SetSprite(powerup_sprite);
+	powerup->SetScale(0.1f);
+
+	// Add the power-up to the game world
+	mGameWorld->AddObject(powerup);
+}
 	}
 }
 
