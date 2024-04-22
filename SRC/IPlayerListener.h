@@ -4,7 +4,8 @@
 class IPlayerListener
 {
 public:
-	virtual void OnPlayerKilled(int lives_left) = 0;
+	virtual void OnPlayerKilled() = 0;
+	virtual void OnPowerUpCollected(const string& powerUpType) = 0;
 };
 
 #endif
