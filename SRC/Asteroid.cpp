@@ -2,6 +2,7 @@
 #include "GameUtil.h"
 #include "Asteroid.h"
 #include "BoundingShape.h"
+#include "Bullet.h"
 
 Asteroid::Asteroid(void) : GameObject("Asteroid")
 {
@@ -21,6 +22,16 @@ Asteroid::~Asteroid(void)
 
 bool Asteroid::CollisionTest(shared_ptr<GameObject> o)
 {
+	// Prevent collision detection with power-ups
+	if (o->GetType() == GameObjectType("PowerUp")) return false;
+
+	// Prevent collision detection with bullets intended for power-ups
+	if (o->GetType() == GameObjectType("Bullet")) {
+		auto bullet = std::dynamic_pointer_cast<Bullet>(o);
+		if (bullet && bullet->IsPowerUpBullet()) {
+			return false; // Do not collide with power-up bullets
+		}
+	}
 	if (GetType() == o->GetType()) return false;
 	if (mBoundingShape.get() == NULL) return false;
 	if (o->GetBoundingShape().get() == NULL) return false;
