@@ -102,11 +102,8 @@ void Asteroids::Stop()
 
 void Asteroids::OnKeyPressed(uchar key, int x, int y)
 {
-	if (!mGameStarted)
-	{
-		switch (key)
-		{
-		case ' ':
+	if (!mGameStarted) {
+		if (key == ' ') {
 			// Hide the start screen labels
 			mTitleLabel->SetVisible(false);
 			mStartLabel->SetVisible(false);
@@ -118,42 +115,23 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 			mGameStarted = true;
 			// Create some asteroids and add them to the world
 			CreateAsteroids(10);
-			break;
-		case '1':
-			SetSpaceshipSprite("spaceship");
-			break;
-		case '2':
-			SetSpaceshipSprite("spaceship2");
-			break;
-		case '3':
-			SetSpaceshipSprite("spaceship3");
-			break;
-		case '4':
-			SetSpaceshipSprite("spaceship4");
-			break;
-		case '5':
-			SetSpaceshipSprite("spaceship5");
-			break;
-		default:
-			break;
+		}
+		else if (key >= '1' && key <= '5') {
+			mSpaceshipSpriteName = "spaceship" + to_string(key - '0');
+			SetSpaceshipSprite(mSpaceshipSpriteName);
 		}
 	}
-	else
-	{
-		switch (key)
+	else {
+		if (key == '1') mSpaceship->Shoot(false);
+		else if (key == '2' && !mIsBulletCooldownActive)
 		{
-		case ' ':
-			mSpaceship->Shoot();
-			break;
-		default:
-			break;
+			mSpaceship->Shoot(true);
+			ToggleBulletCooldown(true);
 		}
 	}
 }
 
-void Asteroids::OnKeyReleased(uchar key, int x, int y)
-{
-}
+void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
 
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
