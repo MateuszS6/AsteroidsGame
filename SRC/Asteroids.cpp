@@ -108,6 +108,7 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 			mTitleLabel->SetVisible(false);
 			mStartLabel->SetVisible(false);
 			mSelectLabel->SetVisible(false);
+			mControlsLabel->SetVisible(false);
 			// Show the in-game labels
 			mScoreLabel->SetVisible(true);
 			mLivesLabel->SetVisible(true);
@@ -263,9 +264,17 @@ void Asteroids::CreateGUI()
 	// Set visiblity to false (hidden)
 	mScoreLabel->SetVisible(false);
 	// Add the GUILabel to the GUIComponent  
-	shared_ptr<GUIComponent> score_component
-		= static_pointer_cast<GUIComponent>(mScoreLabel);
+	shared_ptr<GUIComponent> score_component = static_pointer_cast<GUIComponent>(mScoreLabel);
 	mGameDisplay->GetContainer()->AddComponent(score_component, GLVector2f(0.0f, 1.0f));
+
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mPowerUpLabel = make_shared<GUILabel>("");
+	mPowerUpLabel->SetSize(30);
+	// Set the vertical alignment of the label to GUI_VALIGN_TOP
+	mPowerUpLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> bonus_component = static_pointer_cast<GUIComponent>(mPowerUpLabel);
+	mGameDisplay->GetContainer()->AddComponent(bonus_component, GLVector2f(0.0f, 0.1f));
 
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mLivesLabel = make_shared<GUILabel>("Lives: 3");
@@ -321,6 +330,32 @@ void Asteroids::CreateStartScreen()
 	// Add to the display and set distance from centre/middle
 	shared_ptr<GUIComponent> select_component = static_pointer_cast<GUIComponent>(mSelectLabel);
 	mGameDisplay->GetContainer()->AddComponent(select_component, GLVector2f(0.5f, 0.2f));
+
+	// Create and wrap the select label in a shared_ptr
+	mControlsLabel = shared_ptr<GUILabel>(new GUILabel("[1/2] for Primary/Secondary Fire"));
+	// Align to the bottom of the screen
+	mControlsLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	// Align to the centre of the screen
+	mControlsLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Add to the display and set distance from centre/middle
+	shared_ptr<GUIComponent> controls_component = static_pointer_cast<GUIComponent>(mControlsLabel);
+	mGameDisplay->GetContainer()->AddComponent(controls_component, GLVector2f(0.5f, 0.1f));
+}
+
+void Asteroids::UpdateLivesLabel()
+{
+	// Format the lives left message using an string-based stream
+	ostringstream msg_stream;
+	msg_stream << "Lives: " << mPlayer.GetLivesLeft();
+	// Get the lives left message as a string
+	string lives_msg = msg_stream.str();
+	mLivesLabel->SetText(lives_msg);
+}
+
+void Asteroids::UpdatePowerUpLabel(const string& text, const GLVector3f& colour)
+{
+	mPowerUpLabel->SetText(text);
+	if (!text.empty()) mPowerUpLabel->SetColor(colour);
 }
 
 void Asteroids::OnScoreChanged(int score)
@@ -333,7 +368,6 @@ void Asteroids::OnScoreChanged(int score)
 	mScoreLabel->SetText(score_msg);
 }
 
-void Asteroids::OnPlayerKilled(int lives_left)
 {
 	shared_ptr<GameObject> explosion = CreateExplosion();
 	explosion->SetPosition(mSpaceship->GetPosition());
