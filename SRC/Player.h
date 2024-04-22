@@ -5,8 +5,9 @@
 
 #include "GameObject.h"
 #include "GameObjectType.h"
-#include "IPlayerListener.h"
 #include "IGameWorldListener.h"
+#include "IPlayerListener.h"
+#include "PowerUp.h"
 
 class Player : public IGameWorldListener
 {
@@ -24,6 +25,13 @@ public:
 			mLives -= 1;
 			FirePlayerKilled();
 		}
+		else if (object->GetType() == GameObjectType("PowerUp")) {
+			shared_ptr<PowerUp> powerUp = dynamic_pointer_cast<PowerUp>(object);
+			if (powerUp) {
+				string powerUpName = powerUp->GetName();
+				FirePowerUpCollected(powerUpName);
+			}
+		}
 	}
 
 	void AddListener(shared_ptr<IPlayerListener> listener)
@@ -34,10 +42,27 @@ public:
 	void FirePlayerKilled()
 	{
 		// Send message to all listeners
-		for (PlayerListenerList::iterator lit = mListeners.begin();
-			lit != mListeners.end(); ++lit) {
-			(*lit)->OnPlayerKilled(mLives);
+		for (PlayerListenerList::iterator lit = mListeners.begin(); lit != mListeners.end(); ++lit) {
+			(*lit)->OnPlayerKilled();
 		}
+	}
+
+	void FirePowerUpCollected(const string& powerUpName)
+	{
+		// Send message to all listeners
+		for (PlayerListenerList::iterator lit = mListeners.begin(); lit != mListeners.end(); ++lit) {
+			(*lit)->OnPowerUpCollected(powerUpName);
+		}
+	}
+
+	int GetLivesLeft()
+	{
+		return mLives;
+	}
+
+	void AddLife()
+	{
+		mLives++;
 	}
 
 private:
