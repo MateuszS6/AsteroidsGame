@@ -18,11 +18,12 @@ public:
 
 	virtual void Thrust(float t);
 	virtual void Rotate(float r);
-	virtual void Shoot(void);
+	virtual void Shoot(bool isPowerUpBullet);
 
 	void SetSpaceshipShape(shared_ptr<Shape> spaceship_shape) { mSpaceshipShape = spaceship_shape; }
 	void SetThrusterShape(shared_ptr<Shape> thruster_shape) { mThrusterShape = thruster_shape; }
-	void SetBulletShape(shared_ptr<Shape> bullet_shape) { mBulletShape = bullet_shape; }
+	void SetPrimaryBulletShape(shared_ptr<Shape> bullet_shape) { mPrimaryBulletShape = bullet_shape; }
+	void SetSecondaryBulletShape(shared_ptr<Shape> bullet_shape) { mSecondaryBulletShape = bullet_shape; }
 
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList &objects);
@@ -32,7 +33,8 @@ private:
 
 	shared_ptr<Shape> mSpaceshipShape;
 	shared_ptr<Shape> mThrusterShape;
-	shared_ptr<Shape> mBulletShape;
+	shared_ptr<Shape> mPrimaryBulletShape;
+	shared_ptr<Shape> mSecondaryBulletShape;
 };
 
 #endif

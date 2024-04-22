@@ -69,7 +69,7 @@ void Spaceship::Rotate(float r)
 }
 
 /** Shoot a bullet. */
-void Spaceship::Shoot(void)
+void Spaceship::Shoot(bool isPowerUpBullet)
 {
 	// Check the world exists
 	if (!mWorld) return;
@@ -83,13 +83,19 @@ void Spaceship::Shoot(void)
 	// Construct a vector for the bullet's velocity
 	GLVector3f bullet_velocity = mVelocity + spaceship_heading * bullet_speed;
 	// Construct a new bullet
-	shared_ptr<GameObject> bullet
-		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle, 0, 2000));
-	bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
-	bullet->SetShape(mBulletShape);
+	shared_ptr<GameObject> bullet(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle, 0, 2000, isPowerUpBullet));
+	if (!isPowerUpBullet)
+	{
+		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
+		bullet->SetShape(mPrimaryBulletShape);
+	}
+	else
+	{
+		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 5.0f));
+		bullet->SetShape(mSecondaryBulletShape);
+	}
 	// Add the new bullet to the game world
 	mWorld->AddObject(bullet);
-
 }
 
 bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
