@@ -7,7 +7,6 @@
 #include "GameWorld.h"
 #include "GameDisplay.h"
 #include "Spaceship.h"
-#include "BoundingShape.h"
 #include "BoundingSphere.h"
 #include "GUILabel.h"
 #include "Explosion.h"
@@ -242,16 +241,17 @@ void Asteroids::OnTimer(int value)
 }
 
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
+
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
 {
 	// Create a raw pointer to a spaceship that can be converted to
 	// shared_ptrs of different types because GameWorld implements IRefCount
 	mSpaceship = make_shared<Spaceship>();
-	mSpaceship->SetBoundingShape(make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
-	shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
-	mSpaceship->SetBulletShape(bullet_shape);
-	// Start off with the default spaceship sprite
-	SetSpaceshipSprite("spaceship");
+	TogglePhasing(false);
+	shared_ptr<Shape> bullet_shape_1 = make_shared<Shape>("bullet1.shape");
+	mSpaceship->SetPrimaryBulletShape(bullet_shape_1);
+	shared_ptr<Shape> bullet_shape_2 = make_shared<Shape>("bullet2.shape");
+	mSpaceship->SetSecondaryBulletShape(bullet_shape_2);
 	mSpaceship->SetScale(0.1f);
 	// Reset spaceship back to centre of the world
 	mSpaceship->Reset();
@@ -272,14 +272,17 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 	for (uint i = 0; i < num_asteroids; i++)
 	{
 		Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("asteroid1");
-		shared_ptr<Sprite> asteroid_sprite
-			= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+		shared_ptr<Sprite> asteroid_sprite = make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
 		asteroid_sprite->SetLoopAnimation(true);
 		shared_ptr<GameObject> asteroid = make_shared<Asteroid>();
 		asteroid->SetBoundingShape(make_shared<BoundingSphere>(asteroid->GetThisPtr(), 10.0f));
 		asteroid->SetSprite(asteroid_sprite);
 		asteroid->SetScale(0.2f);
 		mGameWorld->AddObject(asteroid);
+		mAsteroidList.push_back(dynamic_pointer_cast<Asteroid>(asteroid));
+	}
+}
+
 void Asteroids::CreatePowerUp()
 {
 	// Define an array of power-up names
