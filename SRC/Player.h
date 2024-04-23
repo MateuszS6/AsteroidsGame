@@ -28,7 +28,7 @@ public:
 		else if (object->GetType() == GameObjectType("PowerUp")) {
 			shared_ptr<PowerUp> powerUp = dynamic_pointer_cast<PowerUp>(object);
 			if (powerUp) {
-				string powerUpName = powerUp->GetName();
+				string powerUpName = powerUp->GetTypeName();
 				FirePowerUpCollected(powerUpName);
 			}
 		}

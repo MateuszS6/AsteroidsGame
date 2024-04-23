@@ -27,7 +27,7 @@ bool Asteroid::CollisionTest(shared_ptr<GameObject> o)
 
 	// Prevent collision detection with bullets intended for power-ups
 	if (o->GetType() == GameObjectType("Bullet")) {
-		auto bullet = std::dynamic_pointer_cast<Bullet>(o);
+		auto bullet = dynamic_pointer_cast<Bullet>(o);
 		if (bullet && bullet->IsPowerUpBullet()) {
 			return false; // Do not collide with power-up bullets
 		}
@@ -43,10 +43,10 @@ void Asteroid::OnCollision(const GameObjectList& objects)
 	mWorld->FlagForRemoval(GetThisPtr());
 }
 
-void Asteroid::SetSpeed(float scaleFactor)
+void Asteroid::SlowDown()
 {
 	mRotation = 100;
-	mVelocity *= scaleFactor;
+	mVelocity *= 0.3;
 }
 
 void Asteroid::ResetSpeed()

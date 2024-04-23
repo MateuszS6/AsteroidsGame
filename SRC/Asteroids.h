@@ -51,6 +51,7 @@ public:
 	void OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object);
 
 	// Override the default implementation of ITimerListener ////////////////////
+
 	void OnTimer(int value);
 
 private:

@@ -91,7 +91,7 @@ void Spaceship::Shoot(bool isPowerUpBullet)
 	}
 	else
 	{
-		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 5.0f));
+		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 6.0f));
 		bullet->SetShape(mSecondaryBulletShape);
 	}
 	// Add the new bullet to the game world

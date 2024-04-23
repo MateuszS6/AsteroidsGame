@@ -12,10 +12,10 @@ public:
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList& objects);
 
-	std::string GetName() const;
+	string GetTypeName() const;
 
 private:
-	string mPowerUpName;
+	string mType;
 };
 
 #endif

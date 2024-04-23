@@ -3,7 +3,7 @@
 #include "Spaceship.h"
 
 PowerUp::PowerUp(const std::string& name)
-    : GameObject("PowerUp"), mPowerUpName(name)
+    : GameObject("PowerUp"), mType(name)
 {
     mPosition.x = rand() / 2;
     mPosition.y = rand() / 2;
@@ -24,7 +24,7 @@ void PowerUp::OnCollision(const GameObjectList& objects)
     mWorld->FlagForRemoval(GetThisPtr());
 }
 
-std::string PowerUp::GetName() const
+string PowerUp::GetTypeName() const
 {
-    return mPowerUpName;
+    return mType;
 }

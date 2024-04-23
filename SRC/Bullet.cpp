@@ -4,7 +4,7 @@
 
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
-/** Constructor. Bullets live for 2s by default. */
+/** Constructor. Bullets live for 2s and are regular bullets, by default. */
 Bullet::Bullet()
 	: GameObject("Bullet"), mTimeToLive(2000), mIsPowerUpBullet(false)
 {

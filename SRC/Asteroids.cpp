@@ -125,8 +125,7 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 	}
 	else {
 		if (key == '1') mSpaceship->Shoot(false);
-		else if (key == '2' && !mIsBulletCooldownActive)
-		{
+		else if (key == '2' && !mIsBulletCooldownActive) {
 			mSpaceship->Shoot(true);
 			ToggleBulletCooldown(true);
 		}
@@ -180,7 +179,7 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 		mGameWorld->AddObject(explosion);
 
 		// Efficiently remove the asteroid from the list
-		mAsteroidList.erase(std::remove(mAsteroidList.begin(), mAsteroidList.end(), object), mAsteroidList.end());
+		mAsteroidList.erase(remove(mAsteroidList.begin(), mAsteroidList.end(), object), mAsteroidList.end());
 
 		// Decrease asteroid count and possibly start next level
 		if (--mAsteroidCount <= 0) SetTimer(500, START_NEXT_LEVEL); 
@@ -199,7 +198,8 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 
 void Asteroids::OnTimer(int value)
 {
-	switch (value) {
+	switch (value)
+	{
 	case CREATE_NEW_PLAYER:
 		mSpaceship->Reset();
 		mGameWorld->AddObject(mSpaceship);
@@ -312,25 +312,33 @@ void Asteroids::CreatePowerUp()
 
 void Asteroids::ToggleSlowMotion(bool activate)
 {
+	// Update the state variable for slow motion
 	mIsTimeSlowed = activate;
+	// Iterate over all asteroids and adjust their speed based on the activation status
 	for (auto& asteroid : mAsteroidList)
 	{
-		if (activate) asteroid->SetSpeed(0.3f);
-		else asteroid->ResetSpeed();
+		if (activate) asteroid->SlowDown(); // Reduce speed to create a slow-motion effect
+		else asteroid->ResetSpeed(); // Restore original speed when not in slow motion
 	}
+	// Update the power-up label's text and color to reflect the current state of slow motion
 	UpdatePowerUpLabel(activate ? "TIME SLOWED" : "", GLVector3f(0.0f, 0.6f, 0.9f));
 }
 
 void Asteroids::TogglePhasing(bool activate)
 {
+	// Set the spaceship's bounding shape to null (no collisions) when phasing is active
 	mSpaceship->SetBoundingShape(activate ? nullptr : make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
+	// Update the spaceship sprite to indicate whether it is in phasing mode or not
 	SetSpaceshipSprite(activate ? "phasing_" + mSpaceshipSpriteName : mSpaceshipSpriteName);
+	// Update the power-up label's text and color based on the phasing status
 	UpdatePowerUpLabel(activate ? "PHASING" : "", GLVector3f(0.7f, 0.5f, 0.3f));
 }
 
 void Asteroids::ToggleBulletCooldown(bool activate)
 {
+	// Update the state variable for bullet cooldown management
 	mIsBulletCooldownActive = activate;
+	// Set a timer to end the cooldown after 1500 milliseconds if activated
 	if (activate) SetTimer(1500, END_BULLET_COOLDOWN);
 }
 
@@ -416,7 +424,7 @@ void Asteroids::CreateStartScreen()
 	shared_ptr<GUIComponent> select_component = static_pointer_cast<GUIComponent>(mSelectLabel);
 	mGameDisplay->GetContainer()->AddComponent(select_component, GLVector2f(0.5f, 0.2f));
 
-	// Create and wrap the select label in a shared_ptr
+	// Create and wrap the controls label in a shared_ptr
 	mControlsLabel = shared_ptr<GUILabel>(new GUILabel("[1/2] for Primary/Secondary Fire"));
 	// Align to the bottom of the screen
 	mControlsLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
@@ -429,7 +437,7 @@ void Asteroids::CreateStartScreen()
 
 void Asteroids::UpdateLivesLabel()
 {
-	// Format the lives left message using an string-based stream
+	// Format the lives left message using a string-based stream
 	ostringstream msg_stream;
 	msg_stream << "Lives: " << mPlayer.GetLivesLeft();
 	// Get the lives left message as a string
