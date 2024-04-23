@@ -2,7 +2,7 @@
 #include "BoundingShape.h"
 #include "Spaceship.h"
 
-PowerUp::PowerUp(const std::string& name)
+PowerUp::PowerUp(const string& name)
     : GameObject("PowerUp"), mType(name)
 {
     mPosition.x = rand() / 2;
@@ -14,7 +14,7 @@ PowerUp::~PowerUp()
 {
 }
 
-bool PowerUp::CollisionTest(std::shared_ptr<GameObject> o)
+bool PowerUp::CollisionTest(shared_ptr<GameObject> o)
 {
     return false;
 }

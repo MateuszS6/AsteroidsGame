@@ -6,7 +6,7 @@
 class PowerUp : public GameObject
 {
 public:
-	PowerUp(const std::string& name);
+	PowerUp(const string& name);
 	~PowerUp(void);
 
 	bool CollisionTest(shared_ptr<GameObject> o);

@@ -296,7 +296,7 @@ void Asteroids::CreatePowerUp()
 
 	// Create the power-up object
 	auto powerup = make_shared<PowerUp>(name);
-	powerup->SetBoundingShape(std::make_shared<BoundingSphere>(powerup->GetThisPtr(), 5.0f));
+	powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 5.0f));
 
 	// Retrieve animation based on power-up name
 	auto anim_ptr = AnimationManager::GetInstance().GetAnimationByName(name);
