@@ -7,7 +7,7 @@ This repository contains the code for an enhanced version of the classic Asteroi
 - **Institution**: City, University of London
 - **Term**: Spring 2024
 
-### Features
+## Features
 - **Start Screen:** Welcomes players with the game title, a start instruction, and a spaceship selection feature for a personalized gameplay experience.
 - **Enhanced Shooting Mechanics:** Includes primary fire for destroying asteroids and a creative secondary fire system that allows for collecting power-ups through energy fields without direct collision.
 - **Customizable Spaceships:** Players can choose their spaceship at the start of the game, adding a layer of customization that enhances engagement.
