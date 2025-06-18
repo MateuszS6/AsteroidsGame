@@ -1,4 +1,4 @@
-# Asteroids Game Project
+# Asteroids Game
 
 This repository contains the code for an enhanced version of the classic Asteroids game, developed as part of my coursework. The game has been implemented using C++ and leverages OpenGL for rendering graphics on the screen.
 
